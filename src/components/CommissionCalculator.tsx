@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./CommissionCalculator.css";
 
 interface CommissionBreakdown {
   range: string;
@@ -31,16 +32,19 @@ const simulateAPICall = async (revenue: number) => {
           commissionBand.max - commissionBand.min
         );
         const bandCommission = bandAmount * commissionBand.rate;
-        totalCommission += bandCommission;
+
+        const range =
+          commissionBand.max === Infinity
+            ? `£${commissionBand.min}+`
+            : `£${commissionBand.min} - £${commissionBand.max}`;
+
         breakdown.push({
-          range: `${
-            commissionBand.min === 0 ? "£0" : `£${commissionBand.min}`
-          } - ${
-            commissionBand.max === Infinity ? "The Moon" : commissionBand.max
-          }`,
+          range,
           rate: `${commissionBand.rate * 100}%`,
           amount: bandCommission,
         });
+
+        totalCommission += bandCommission;
         revenue -= bandAmount;
 
         if (revenue <= 0) {
@@ -82,8 +86,9 @@ const CommissionCalculator: React.FC = () => {
   };
 
   return (
-    <>
-      <div>
+    <div className="widget-card">
+      <h3 className="widget-title">Commission Calculator</h3>
+      <div className="input-container">
         <label htmlFor="revenue">£ </label>
         <input
           id="revenue"
@@ -94,15 +99,17 @@ const CommissionCalculator: React.FC = () => {
           placeholder="Enter revenue"
         />
       </div>
-      <button onClick={calculateCommission} disabled={!revenue || loading}>
-        {loading ? "Calculating..." : "Calculate"}
-      </button>
-      <button onClick={resetValues}>Reset</button>
+      <div className="button-container">
+        <button onClick={calculateCommission} disabled={!revenue || loading}>
+          {loading ? "Calculating..." : "Calculate"}
+        </button>
+        <button onClick={resetValues}>Reset</button>
+      </div>
       {commissionTotal && (
-        <>
-          <h2>
+        <div className="results-container">
+          <h4>
             Total Commission: £{commissionTotal.totalCommission.toFixed(2)}
-          </h2>
+          </h4>
           <table>
             <caption>Breakdown by Band</caption>
             <thead>
@@ -122,9 +129,9 @@ const CommissionCalculator: React.FC = () => {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
