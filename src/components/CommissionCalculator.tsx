@@ -19,21 +19,15 @@ const bands = [
   { min: 20000, max: Infinity, rate: 0.25 },
 ];
 
-const CommissionCalculator: React.FC = () => {
-  const [revenue, setRevenue] = useState<string>("");
-  const [commissionTotal, setCommissionTotal] =
-    useState<CommissionTotal | null>(null);
-
-  const calculateCommission = () => {
-    let revenueValue = Number(revenue);
-
-    if (!isNaN(revenueValue) && revenueValue >= 0) {
+const simulateAPICall = async (revenue: number) => {
+  return new Promise<CommissionTotal>((resolve) => {
+    setTimeout(() => {
       let totalCommission = 0;
       const breakdown: CommissionBreakdown[] = [];
 
       for (const commissionBand of bands) {
         const bandAmount = Math.min(
-          revenueValue,
+          revenue,
           commissionBand.max - commissionBand.min
         );
         const bandCommission = bandAmount * commissionBand.rate;
@@ -47,14 +41,38 @@ const CommissionCalculator: React.FC = () => {
           rate: `${commissionBand.rate * 100}%`,
           amount: bandCommission,
         });
-        revenueValue -= bandAmount;
+        revenue -= bandAmount;
 
-        if (revenueValue <= 0) {
+        if (revenue <= 0) {
           break;
         }
       }
 
-      setCommissionTotal({ totalCommission, breakdown });
+      resolve({ totalCommission, breakdown });
+    }, 1000);
+  });
+};
+
+const CommissionCalculator: React.FC = () => {
+  const [revenue, setRevenue] = useState<string>("");
+  const [commissionTotal, setCommissionTotal] =
+    useState<CommissionTotal | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const calculateCommission = async () => {
+    setLoading(true);
+
+    const revenueValue = Number(revenue);
+
+    if (!isNaN(revenueValue) && revenueValue >= 0) {
+      try {
+        const result = await simulateAPICall(revenueValue);
+        setCommissionTotal(result);
+      } catch (error) {
+        console.error("Error in making request", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -76,8 +94,8 @@ const CommissionCalculator: React.FC = () => {
           placeholder="Enter revenue"
         />
       </div>
-      <button onClick={calculateCommission} disabled={!revenue}>
-        Calculate
+      <button onClick={calculateCommission} disabled={!revenue || loading}>
+        {loading ? "Calculating..." : "Calculate"}
       </button>
       <button onClick={resetValues}>Reset</button>
       {commissionTotal && (
