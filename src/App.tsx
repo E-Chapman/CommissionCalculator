@@ -1,4 +1,4 @@
-import CommissionCalculator from "./components/CommissionCalculator";
+import CommissionCalculator from "./components/CommissionCalculator/CommissionCalculator";
 
 function App() {
   return <CommissionCalculator />;
