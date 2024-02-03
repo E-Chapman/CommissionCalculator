@@ -68,7 +68,7 @@ const CommissionCalculator: React.FC = () => {
 
     const revenueValue = Number(revenue);
 
-    if (!isNaN(revenueValue) && revenueValue >= 0) {
+    if (!isNaN(revenueValue) && revenueValue > 0) {
       try {
         const result = await simulateAPICall(revenueValue);
         setCommissionTotal(result);
@@ -77,6 +77,11 @@ const CommissionCalculator: React.FC = () => {
       } finally {
         setLoading(false);
       }
+    } else {
+      console.error(
+        "Invalid revenue value. Please enter a value greater than 0."
+      );
+      setLoading(false);
     }
   };
 
@@ -95,12 +100,16 @@ const CommissionCalculator: React.FC = () => {
           type="number"
           value={revenue}
           onChange={(e) => setRevenue(e.target.value)}
-          aria-label="Revenue input"
+          aria-label="Enter revenue"
           placeholder="Enter revenue"
+          min="1"
         />
       </div>
       <div className="button-container">
-        <button onClick={calculateCommission} disabled={!revenue || loading}>
+        <button
+          onClick={calculateCommission}
+          disabled={!revenue || loading || Number(revenue) <= 0}
+        >
           {loading ? "Calculating..." : "Calculate"}
         </button>
         <button onClick={resetValues}>Reset</button>
