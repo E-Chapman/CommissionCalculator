@@ -64,6 +64,7 @@ button {
   transition: all 0.3s ease-in-out;
     &:hover {
         background-color: #3574e3;
+        border: 1px solid #3574e3;
       }
     &:disabled {
       background-color: #c9daec;
