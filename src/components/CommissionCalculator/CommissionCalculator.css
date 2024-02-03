@@ -34,7 +34,7 @@ input {
   border: 1px solid #87b6e4;
   background-color: #c9daec;
   border-radius: 8px;
-  padding: 9px;
+  padding: 10px;
   width: 150px;
   margin: 0 10px;
   font-size: 15px;
@@ -54,7 +54,6 @@ input {
 button {
   border: 1px solid #3eac41;
   background-color: #4CAF50;
-  border: none;
   color: white;
   padding: 10px 20px;
   text-align: center;
@@ -66,6 +65,12 @@ button {
     &:hover {
         background-color: #3574e3;
       }
+    &:disabled {
+      background-color: #c9daec;
+      border: 1px solid #87b6e4;
+      color: #87b6e4;
+      cursor: not-allowed;
+    }
 }
 
 h4 {
@@ -89,11 +94,9 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   width: 80%;
-  border: 1px solid #a9c9ea;
 }
 
-th {
-  border: 1px solid #ddd;
+th, td {
   padding: 5px;
   text-align: left;
   font-weight: 500;
@@ -102,10 +105,5 @@ th {
 }
 
 td {
-  border: 1px solid #ddd;
-  padding: 5px;
-  text-align: left;
   font-weight: 300;
-  font-size: 14px;
-  border: 1px solid #a9c9ea;
 }
