@@ -129,8 +129,8 @@ const CommissionCalculator: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {commissionTotal.breakdown.map((band, index) => (
-                <tr key={index}>
+              {commissionTotal.breakdown.map((band) => (
+                <tr key={band.range}>
                   <td>{band.range}</td>
                   <td>{band.rate}</td>
                   <td>£{band.amount.toFixed(2)}</td>
